@@ -37,16 +37,14 @@ To build from source, clone the latest version from this repository into your ca
 using
 
 	cd catkin_workspace/src
-	git clone https://github.com/ethz-asl/ros_best_practices.git
+	git clone git@github.com:WiseL00k/hero_chassis_controller.git
 	cd ../
 	rosdep install --from-paths . --ignore-src
 	catkin build
 
 ## Usage
 
-Describe the quickest way to run this software, for example:
-
-Run the main node with
+Run the simulation and controller with
 
 	roslaunch hero_chassis_controller run_simulation_and_controller.launch
 
@@ -58,8 +56,6 @@ mon launch hero_chassis_controller run_simulation_and_controller.launch
 ```
 
 ## Config files
-
-Config file config
 
 * **controllers.yaml** The Params of hero_chassis_controller and joint_state_controller.
 
