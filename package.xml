@@ -14,12 +14,13 @@
   <!-- depend: build, export, and execution dependency -->
   <depend>eigen</depend>
   <depend>roscpp</depend>
-  <depend>sensor_msgs</depend>
+  <depend>std_msgs</depend>
   <depend>controller_interface</depend>
   <depend>hardware_interface</depend>
   <depend>forward_command_controller</depend>
   <depend>pluginlib</depend>
-  <depend>rm_description</depend>
+  <depend>control_toolbox</depend>
+  <depend>realtime_tools</depend>
   <build_depend>roslint</build_depend>
 
   <export>
