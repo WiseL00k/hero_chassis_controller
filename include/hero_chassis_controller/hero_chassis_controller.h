@@ -34,59 +34,61 @@ public:
    *
    * \param double pos Velocity command to issue
    */
-  //void setCommand(double cmd);
+  // void setCommand(double cmd);
 
   /*!
    * \brief Get latest velocity command to the joint: revolute (angle) and prismatic (velocity).
    */
-  //void getCommand(double & cmd);
+  // void getCommand(double & cmd);
 
   /** \brief This is called from within the realtime thread just before the
    * first call to \ref update
    *
    * \param time The current time
    */
-  //void starting(const ros::Time& time) override;
-
+  // void starting(const ros::Time& time) override;
 
   /**
    * \brief Get the PID parameters
    */
-  //void getGains(double &p, double &i, double &d, double &i_max, double &i_min);
+  // void getGains(double &p, double &i, double &d, double &i_max, double &i_min);
 
   /**
    * \brief Set the PID parameters
    */
-  //void setGains(const double &p, const double &i, const double &d, const double &i_max, const double &i_min, const bool &antiwindup = false);
+  // void setGains(const double &p, const double &i, const double &d, const double &i_max, const double &i_min, const
+  // bool &antiwindup = false);
 
   /**
    * \brief Get the name of the joint this controller uses
    */
-  //std::string getJointName();
+  // std::string getJointName();
 
-
-  double command_{};                                /**< Last commanded velocity. */
+  double command_{}; /**< Last commanded velocity. */
 
 private:
   int state_{};
   ros::Time last_change_;
+  double current_vel[5]{};
+  double target_vel[5]{};
+  double error[5]{};
+  double commanded_effort[5]{};
 
   int loop_count_;
   ros::Subscriber sub_command_;
   /**< Internal PID controller. */
-  control_toolbox::Pid front_left_joint_pid_controller_,front_right_joint_pid_controller_,back_left_joint_pid_controller_,back_right_joint_pid_controller_;
+  control_toolbox::Pid front_left_joint_pid_controller_, front_right_joint_pid_controller_,
+      back_left_joint_pid_controller_, back_right_joint_pid_controller_;
 
-  std::unique_ptr<
-      realtime_tools::RealtimePublisher<
-          control_msgs::JointControllerState> > controller_state_publisher_ ;
+  std::unique_ptr<realtime_tools::RealtimePublisher<control_msgs::JointControllerState> > controller_state_publisher_;
 
   /**
    * \brief Callback from /command subscriber for setpoint
    */
-  void set_chassis_state(const geometry_msgs::Twist::ConstPtr &msg);
+  void set_chassis_state(const geometry_msgs::Twist::ConstPtr& msg);
 
 }; /* hero_chassis_controller */
 
-}
+}  // namespace hero_chassis_controller
 
 #endif
