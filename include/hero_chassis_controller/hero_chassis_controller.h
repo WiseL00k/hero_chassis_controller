@@ -74,7 +74,14 @@ private:
   double error[5]{};
   double commanded_effort[5]{};
 
-  int loop_count_;
+  double Vx{};
+  double Vy{};
+  double W{};
+  double wheelRadius{};
+  double wheelTrack{};
+  double wheelBase{};
+
+  int loop_count_{};
   ros::Subscriber sub_command_;
   /**< Internal PID controller. */
   control_toolbox::Pid front_left_joint_pid_controller_, front_right_joint_pid_controller_,
@@ -83,10 +90,11 @@ private:
   std::unique_ptr<realtime_tools::RealtimePublisher<control_msgs::JointControllerState> > controller_state_publisher_;
 
   /**
-   * \brief Callback from /command subscriber for setpoint
+   * \brief Callback from /cmd_vel subscriber for setpoint
    */
   void set_chassis_state(const geometry_msgs::Twist::ConstPtr& msg);
 
+  void calc_wheel_vel();
 }; /* hero_chassis_controller */
 
 }  // namespace hero_chassis_controller

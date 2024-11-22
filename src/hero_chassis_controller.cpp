@@ -6,6 +6,12 @@ namespace hero_chassis_controller
 bool HeroChassisController::init(hardware_interface::EffortJointInterface* effort_joint_interface,
                                  ros::NodeHandle& root_nh, ros::NodeHandle& controller_nh)
 {
+  // get params
+  controller_nh.getParam("WheelRadius", wheelRadius);
+  controller_nh.getParam("WheelTrack", wheelTrack);
+  controller_nh.getParam("WheelBase", wheelBase);
+
+  // effort_joint init
   front_left_joint_ = effort_joint_interface->getHandle("left_front_wheel_joint");
   front_right_joint_ = effort_joint_interface->getHandle("right_front_wheel_joint");
   back_left_joint_ = effort_joint_interface->getHandle("left_back_wheel_joint");
@@ -29,6 +35,8 @@ bool HeroChassisController::init(hardware_interface::EffortJointInterface* effor
 
 void HeroChassisController::update(const ros::Time& time, const ros::Duration& period)
 {
+  // Inverse Kinematics and PID control
+  calc_wheel_vel();
   current_vel[1] = front_left_joint_.getVelocity();
   current_vel[2] = front_right_joint_.getVelocity();
   current_vel[3] = back_left_joint_.getVelocity();
@@ -36,7 +44,7 @@ void HeroChassisController::update(const ros::Time& time, const ros::Duration& p
 
   for (int i = 1; i <= 4; ++i)
   {
-    error[i] = command_ - current_vel[i];
+    error[i] = target_vel[i] - current_vel[i];
 
     // Set the PID error and compute the PID command with nonuniform time
     // step size. The derivative error is computed from the change in the error
@@ -72,33 +80,26 @@ void HeroChassisController::update(const ros::Time& time, const ros::Duration& p
   }
   loop_count_++;
 
-  //  double tau = 0.2;  // torque
-  //                                                                            // NOTE: DON'T COPY THESE NAIVE TESTING
-  //                                                                            CODES !!! USE INVERSE KINEMATICS !!!
-  //                                                                            // NOTE: DON'T COPY THESE NAIVE TESTING
-  //                                                                            CODES !!! USE INVERSE KINEMATICS !!!
-  //                                                                            // NOTE: DON'T COPY THESE NAIVE TESTING
-  //                                                                            CODES !!! USE INVERSE KINEMATICS !!!
-  //  static double cmd_[6][4] = { { tau, tau, tau, tau },                      //  forward
-  //                               { -2 * tau, -2 * tau, -2 * tau, -2 * tau },  //  backward
-  //                               { -tau, tau, tau, -tau },                    //  left
-  //                               { 2 * tau, -2 * tau, -2 * tau, 2 * tau },    //  right
-  //                               { 2 * tau, -2 * tau, 2 * tau, -2 * tau },    //  clockwise
-  //                               { -tau, tau, -tau, tau } };                  //  counterclockwise
   //  if ((time - last_change_).toSec() > 2)
   //  {
   //    state_ = (state_ + 1) % 6;
   //    last_change_ = time;
   //  }
-  //  front_left_joint_.setCommand(cmd_[state_][0]);
-  //  front_right_joint_.setCommand(cmd_[state_][1]);
-  //  back_left_joint_.setCommand(cmd_[state_][2]);
-  //  back_right_joint_.setCommand(cmd_[state_][3]);
 }
 
 void HeroChassisController::set_chassis_state(const geometry_msgs::Twist::ConstPtr& msg)
 {
-  command_ = msg->linear.x;
+  Vx = msg->linear.x;
+  Vy = msg->linear.y;
+  W = msg->angular.z;
+}
+
+void HeroChassisController::calc_wheel_vel()
+{
+  target_vel[1] = (Vx - Vy - ((wheelTrack + wheelBase) / 2) * W) / wheelRadius;
+  target_vel[2] = (Vx + Vy + ((wheelTrack + wheelBase) / 2) * W) / wheelRadius;
+  target_vel[3] = (Vx + Vy - ((wheelTrack + wheelBase) / 2) * W) / wheelRadius;
+  target_vel[4] = (Vx - Vy + ((wheelTrack + wheelBase) / 2) * W) / wheelRadius;
 }
 
 PLUGINLIB_EXPORT_CLASS(hero_chassis_controller::HeroChassisController, controller_interface::ControllerBase)
