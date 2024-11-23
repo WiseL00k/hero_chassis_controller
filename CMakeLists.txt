@@ -17,6 +17,8 @@ find_package(catkin REQUIRED
         pluginlib
         control_toolbox
         realtime_tools
+        nav_msgs
+        tf
         roslint
 )
 
@@ -45,6 +47,8 @@ catkin_package(
         pluginlib
         control_toolbox
         realtime_tools
+        nav_msgs
+        tf
         DEPENDS
 )
 

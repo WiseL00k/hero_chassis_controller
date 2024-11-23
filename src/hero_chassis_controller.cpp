@@ -28,13 +28,15 @@ bool HeroChassisController::init(hardware_interface::EffortJointInterface* effor
       new realtime_tools::RealtimePublisher<control_msgs::JointControllerState>(controller_nh, "state", 1));
 
   // Start command subscriber
-  sub_command_ = root_nh.subscribe<geometry_msgs::Twist>("cmd_vel", 1, &HeroChassisController::set_chassis_state, this);
-
+  sub_command = root_nh.subscribe<geometry_msgs::Twist>("cmd_vel", 1, &HeroChassisController::set_chassis_state, this);
+  odom_pub = root_nh.advertise<nav_msgs::Odometry>("odom", 10);
   return true;
 }
 
 void HeroChassisController::update(const ros::Time& time, const ros::Duration& period)
 {
+  current_time = time;
+  period_ = period;
   // Inverse Kinematics and PID control
   calc_wheel_vel();
   current_vel[1] = front_left_joint_.getVelocity();
@@ -62,7 +64,7 @@ void HeroChassisController::update(const ros::Time& time, const ros::Duration& p
     if (controller_state_publisher_ && controller_state_publisher_->trylock())
     {
       controller_state_publisher_->msg_.header.stamp = time;
-      controller_state_publisher_->msg_.set_point = command_;
+      controller_state_publisher_->msg_.set_point = command;
       controller_state_publisher_->msg_.process_value = current_vel[1];
       controller_state_publisher_->msg_.error = error[1];
       controller_state_publisher_->msg_.time_step = period.toSec();
@@ -80,26 +82,84 @@ void HeroChassisController::update(const ros::Time& time, const ros::Duration& p
   }
   loop_count_++;
 
-  //  if ((time - last_change_).toSec() > 2)
+  calc_chassis_vel();
+  compute_odometry();
+  updateOdometry();
+
+  //  if ((time - last_time).toSec() > 2)
   //  {
   //    state_ = (state_ + 1) % 6;
-  //    last_change_ = time;
+  //    last_time = time;
   //  }
 }
 
 void HeroChassisController::set_chassis_state(const geometry_msgs::Twist::ConstPtr& msg)
 {
-  Vx = msg->linear.x;
-  Vy = msg->linear.y;
-  W = msg->angular.z;
+  Vx_target = msg->linear.x;
+  Vy_target = msg->linear.y;
+  W_target = msg->angular.z;
 }
 
 void HeroChassisController::calc_wheel_vel()
 {
-  target_vel[1] = (Vx - Vy - ((wheelTrack + wheelBase) / 2) * W) / wheelRadius;
-  target_vel[2] = (Vx + Vy + ((wheelTrack + wheelBase) / 2) * W) / wheelRadius;
-  target_vel[3] = (Vx + Vy - ((wheelTrack + wheelBase) / 2) * W) / wheelRadius;
-  target_vel[4] = (Vx - Vy + ((wheelTrack + wheelBase) / 2) * W) / wheelRadius;
+  target_vel[1] = (Vx_target - Vy_target - ((wheelTrack + wheelBase) / 2) * W_target) / wheelRadius;
+  target_vel[2] = (Vx_target + Vy_target + ((wheelTrack + wheelBase) / 2) * W_target) / wheelRadius;
+  target_vel[3] = (Vx_target + Vy_target - ((wheelTrack + wheelBase) / 2) * W_target) / wheelRadius;
+  target_vel[4] = (Vx_target - Vy_target + ((wheelTrack + wheelBase) / 2) * W_target) / wheelRadius;
+}
+
+void HeroChassisController::calc_chassis_vel()
+{
+  Vx_current = (current_vel[1] + current_vel[2] + current_vel[3] + current_vel[4]) * wheelRadius / 4;
+  Vy_current = (-current_vel[1] + current_vel[2] + current_vel[3] - current_vel[4]) * wheelRadius / 4;
+  W_current = (-current_vel[1] + current_vel[2] - current_vel[3] + current_vel[4]) *
+              (wheelRadius / (4 * ((wheelTrack + wheelBase) / 2)));
+}
+
+void HeroChassisController::compute_odometry()
+{
+  double dt = period_.toSec();
+  double delta_x = (Vx_current * cos(th) - Vy_current * sin(th)) * dt;
+  double delta_y = (Vx_current * sin(th) + Vy_current * cos(th)) * dt;
+  double delta_th = W_current * dt;
+
+  x += delta_x;
+  y += delta_y;
+  th += delta_th;
+}
+
+void HeroChassisController::updateOdometry()
+{
+  geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(th);
+  geometry_msgs::TransformStamped odom_trans;
+
+  odom_trans.header.stamp = current_time;
+  odom_trans.header.frame_id = "odom";
+  odom_trans.child_frame_id = "base_link";
+
+  odom_trans.transform.translation.x = x;
+  odom_trans.transform.translation.y = y;
+  odom_trans.transform.translation.z = 0.0;
+  odom_trans.transform.rotation = odom_quat;
+
+  // send the transform
+  odom_broadcaster.sendTransform(odom_trans);
+
+  nav_msgs::Odometry odom_data{};
+  odom_data.header.stamp = current_time;
+  odom_data.header.frame_id = "odom";
+  odom_data.child_frame_id = "base_link";
+
+  odom_data.pose.pose.position.x = x;
+  odom_data.pose.pose.position.y = y;
+  odom_data.pose.pose.position.z = 0.0;
+  odom_data.pose.pose.orientation = odom_quat;
+
+  odom_data.twist.twist.linear.x = Vx_current;
+  odom_data.twist.twist.linear.y = Vy_current;
+  odom_data.twist.twist.angular.z = W_current;
+
+  odom_pub.publish(odom_data);
 }
 
 PLUGINLIB_EXPORT_CLASS(hero_chassis_controller::HeroChassisController, controller_interface::ControllerBase)

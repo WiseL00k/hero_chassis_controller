@@ -12,6 +12,8 @@
 #include <memory>
 #include <realtime_tools/realtime_publisher.h>
 #include <geometry_msgs/Twist.h>
+#include <nav_msgs/Odometry.h>
+#include <tf/transform_broadcaster.h>
 
 namespace hero_chassis_controller
 {
@@ -64,25 +66,35 @@ public:
    */
   // std::string getJointName();
 
-  double command_{}; /**< Last commanded velocity. */
+  double command{}; /**< Last commanded velocity. */
 
 private:
   int state_{};
-  ros::Time last_change_;
+  ros::Time current_time, last_time;
+  ros::Duration period_;
   double current_vel[5]{};
   double target_vel[5]{};
   double error[5]{};
   double commanded_effort[5]{};
 
-  double Vx{};
-  double Vy{};
-  double W{};
+  double Vx_target{};
+  double Vy_target{};
+  double W_target{};
   double wheelRadius{};
   double wheelTrack{};
   double wheelBase{};
 
+  double x{};
+  double y{};
+  double th{};
+  double Vx_current{};
+  double Vy_current{};
+  double W_current{};
+
   int loop_count_{};
-  ros::Subscriber sub_command_;
+  ros::Subscriber sub_command;
+  ros::Publisher odom_pub;
+  tf::TransformBroadcaster odom_broadcaster;
   /**< Internal PID controller. */
   control_toolbox::Pid front_left_joint_pid_controller_, front_right_joint_pid_controller_,
       back_left_joint_pid_controller_, back_right_joint_pid_controller_;
@@ -95,6 +107,12 @@ private:
   void set_chassis_state(const geometry_msgs::Twist::ConstPtr& msg);
 
   void calc_wheel_vel();
+
+  void calc_chassis_vel();
+
+  void compute_odometry();
+
+  void updateOdometry();
 }; /* hero_chassis_controller */
 
 }  // namespace hero_chassis_controller
