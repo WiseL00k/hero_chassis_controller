@@ -5,7 +5,7 @@ controller:
     front_right_joint_pid: {p: 8.2,  i: 0.0, d: 0.00034, antiwindup: true}
     back_left_joint_pid: {p: 8.2,  i: 0.0, d: 0.00034, antiwindup: true}
     back_right_joint_pid: {p: 8.2,  i: 0.0, d: 0.00034, antiwindup: true}
-    WheelRadius: 0.7625
+    WheelRadius: 0.07625
     WheelTrack: 0.4
     WheelBase: 0.4
     Use_Global_Vel: false
