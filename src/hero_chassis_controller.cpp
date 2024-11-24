@@ -10,6 +10,7 @@ bool HeroChassisController::init(hardware_interface::EffortJointInterface* effor
   controller_nh.getParam("WheelRadius", wheelRadius);
   controller_nh.getParam("WheelTrack", wheelTrack);
   controller_nh.getParam("WheelBase", wheelBase);
+  controller_nh.param("Use_Global_Vel", use_global_velocity_, false);
 
   // effort_joint init
   front_left_joint_ = effort_joint_interface->getHandle("left_front_wheel_joint");
@@ -30,6 +31,7 @@ bool HeroChassisController::init(hardware_interface::EffortJointInterface* effor
   // Start command subscriber
   sub_command = root_nh.subscribe<geometry_msgs::Twist>("cmd_vel", 1, &HeroChassisController::set_chassis_state, this);
   odom_pub = root_nh.advertise<nav_msgs::Odometry>("odom", 10);
+  last_time = ros::Time::now();
   return true;
 }
 
@@ -37,12 +39,37 @@ void HeroChassisController::update(const ros::Time& time, const ros::Duration& p
 {
   current_time = time;
   period_ = period;
-  // Inverse Kinematics and PID control
-  calc_wheel_vel();
+
+  // get each current_wheel_vel
   current_vel[1] = front_left_joint_.getVelocity();
   current_vel[2] = front_right_joint_.getVelocity();
   current_vel[3] = back_left_joint_.getVelocity();
   current_vel[4] = back_right_joint_.getVelocity();
+
+  // odometry
+  calc_chassis_vel();
+  compute_odometry();
+  updateOdometry();
+
+  if (use_global_velocity_)
+  {
+    global_vel.header.frame_id = "odom";
+    //    global_vel.header.stamp = current_time - ros::Duration(0.004);
+    global_vel.header.stamp = ros::Time(0);
+    global_vel.vector.x = Vx_target;
+    global_vel.vector.y = Vy_target;
+    global_vel.vector.z = 0.0;
+
+    tf_listener_.waitForTransform("base_link", "odom", ros::Time(0), ros::Duration(3.0));
+    //        tf_listener_.lookupTransform("base_link", "odom", ros::Time(0), transform);
+    tf_listener_.transformVector("base_link", global_vel, base_vel);
+
+    Vx_target = base_vel.vector.x;
+    Vy_target = base_vel.vector.y;
+  }
+
+  // Inverse Kinematics and PID control
+  calc_wheel_vel();
 
   for (int i = 1; i <= 4; ++i)
   {
@@ -81,16 +108,7 @@ void HeroChassisController::update(const ros::Time& time, const ros::Duration& p
     }
   }
   loop_count_++;
-
-  calc_chassis_vel();
-  compute_odometry();
-  updateOdometry();
-
-  //  if ((time - last_time).toSec() > 2)
-  //  {
-  //    state_ = (state_ + 1) % 6;
-  //    last_time = time;
-  //  }
+  last_time = current_time;
 }
 
 void HeroChassisController::set_chassis_state(const geometry_msgs::Twist::ConstPtr& msg)

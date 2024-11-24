@@ -14,6 +14,7 @@
 #include <geometry_msgs/Twist.h>
 #include <nav_msgs/Odometry.h>
 #include <tf/transform_broadcaster.h>
+#include <tf/transform_listener.h>
 
 namespace hero_chassis_controller
 {
@@ -101,6 +102,9 @@ private:
 
   std::unique_ptr<realtime_tools::RealtimePublisher<control_msgs::JointControllerState> > controller_state_publisher_;
 
+  bool use_global_velocity_{};
+  tf::TransformListener tf_listener_;
+  geometry_msgs::Vector3Stamped global_vel, base_vel;
   /**
    * \brief Callback from /cmd_vel subscriber for setpoint
    */

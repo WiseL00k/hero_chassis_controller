@@ -1,13 +1,14 @@
 controller:
   hero_chassis_controller:
     type: hero_chassis_controller/HeroChassisController
-    front_left_joint_pid: {p: 8.2,  i: 0.041, d: 0.00034}
-    front_right_joint_pid: {p: 8.2,  i: 0.041, d: 0.00034}
-    back_left_joint_pid: {p: 8.2,  i: 0.041, d: 0.00034}
-    back_right_joint_pid: {p: 8.2,  i: 0.041, d: 0.00034}
+    front_left_joint_pid: {p: 8.2,  i: 0.0, d: 0.00034, antiwindup: true}
+    front_right_joint_pid: {p: 8.2,  i: 0.0, d: 0.00034, antiwindup: true}
+    back_left_joint_pid: {p: 8.2,  i: 0.0, d: 0.00034, antiwindup: true}
+    back_right_joint_pid: {p: 8.2,  i: 0.0, d: 0.00034, antiwindup: true}
     WheelRadius: 0.7625
     WheelTrack: 0.4
     WheelBase: 0.4
+    Use_Global_Vel: false
 
   joint_state_controller:
     type: joint_state_controller/JointStateController
