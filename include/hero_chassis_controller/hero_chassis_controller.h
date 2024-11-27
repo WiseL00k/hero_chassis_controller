@@ -114,6 +114,8 @@ private:
 
   void calc_chassis_vel();
 
+  void chassis_control();
+  
   void compute_odometry();
 
   void updateOdometry();

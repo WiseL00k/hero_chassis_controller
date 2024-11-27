@@ -7,10 +7,10 @@ bool HeroChassisController::init(hardware_interface::EffortJointInterface* effor
                                  ros::NodeHandle& root_nh, ros::NodeHandle& controller_nh)
 {
   // get params
-  controller_nh.getParam("WheelRadius", wheelRadius);
-  controller_nh.getParam("WheelTrack", wheelTrack);
-  controller_nh.getParam("WheelBase", wheelBase);
-  controller_nh.param("Use_Global_Vel", use_global_velocity_, false);
+  controller_nh.getParam("wheel_radius", wheelRadius);
+  controller_nh.getParam("wheel_track", wheelTrack);
+  controller_nh.getParam("wheel_base", wheelBase);
+  controller_nh.param("use_global_vel", use_global_velocity_, false);
 
   // effort_joint init
   front_left_joint_ = effort_joint_interface->getHandle("left_front_wheel_joint");
@@ -68,23 +68,7 @@ void HeroChassisController::update(const ros::Time& time, const ros::Duration& p
     Vy_target = base_vel.vector.y;
   }
 
-  // Inverse Kinematics and PID control
-  calc_wheel_vel();
-
-  for (int i = 1; i <= 4; ++i)
-  {
-    error[i] = target_vel[i] - current_vel[i];
-
-    // Set the PID error and compute the PID command with nonuniform time
-    // step size. The derivative error is computed from the change in the error
-    // and the timestep dt.
-    commanded_effort[i] = front_left_joint_pid_controller_.computeCommand(error[i], period);
-  }
-
-  front_left_joint_.setCommand(commanded_effort[1]);
-  front_right_joint_.setCommand(commanded_effort[2]);
-  back_left_joint_.setCommand(commanded_effort[3]);
-  back_right_joint_.setCommand(commanded_effort[4]);
+  chassis_control();
 
   if (loop_count_ % 10 == 0)
   {
@@ -132,6 +116,27 @@ void HeroChassisController::calc_chassis_vel()
   Vy_current = (-current_vel[1] + current_vel[2] + current_vel[3] - current_vel[4]) * wheelRadius / 4;
   W_current = (-current_vel[1] + current_vel[2] - current_vel[3] + current_vel[4]) *
               (wheelRadius / (4 * ((wheelTrack + wheelBase) / 2)));
+}
+
+void HeroChassisController::chassis_control()
+{
+  // Inverse Kinematics and PID control
+  calc_wheel_vel();
+
+  for (int i = 1; i <= 4; ++i)
+  {
+    error[i] = target_vel[i] - current_vel[i];
+
+    // Set the PID error and compute the PID command with nonuniform time
+    // step size. The derivative error is computed from the change in the error
+    // and the timestep dt.
+    commanded_effort[i] = front_left_joint_pid_controller_.computeCommand(error[i], period_);
+  }
+
+  front_left_joint_.setCommand(commanded_effort[1]);
+  front_right_joint_.setCommand(commanded_effort[2]);
+  back_left_joint_.setCommand(commanded_effort[3]);
+  back_right_joint_.setCommand(commanded_effort[4]);
 }
 
 void HeroChassisController::compute_odometry()
