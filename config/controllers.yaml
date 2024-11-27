@@ -1,10 +1,10 @@
 controller:
   hero_chassis_controller:
     type: hero_chassis_controller/HeroChassisController
-    front_left_joint_pid: {p: 8.2,  i: 0.0, d: 0.00034, antiwindup: true}
-    front_right_joint_pid: {p: 8.2,  i: 0.0, d: 0.00034, antiwindup: true}
-    back_left_joint_pid: {p: 8.2,  i: 0.0, d: 0.00034, antiwindup: true}
-    back_right_joint_pid: {p: 8.2,  i: 0.0, d: 0.00034, antiwindup: true}
+    front_left_joint_pid: { p: 41000,  i: 410, d: 61, antiwindup: true }
+    front_right_joint_pid: { p: 41000,  i: 410, d: 61, antiwindup: true }
+    back_left_joint_pid: { p: 41000,  i: 410, d: 61, antiwindup: true }
+    back_right_joint_pid: { p: 41000,  i: 410, d: 61, antiwindup: true }
     WheelRadius: 0.07625
     WheelTrack: 0.4
     WheelBase: 0.4
