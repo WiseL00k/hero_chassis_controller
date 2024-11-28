@@ -9,7 +9,7 @@ controller:
     wheel_track: 0.4
     wheel_base: 0.4
     use_global_vel: false
-    chassis_acceleration: 5.0
+    acceleration_: 60.0
 
   joint_state_controller:
     type: joint_state_controller/JointStateController
