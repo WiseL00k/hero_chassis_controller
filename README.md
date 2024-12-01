@@ -1,5 +1,3 @@
-
-
 # hero_chassis_controller
 
 ## Overview
@@ -30,6 +28,10 @@ The hero_chassis_controller package has been tested under ROS Noetic on respecti
 - hardware_interface
 - forward_command_controller
 - pluginlib
+- control_toolbox
+- realtime_tools
+- nav_msgs
+- tf
 
 #### Building
 
