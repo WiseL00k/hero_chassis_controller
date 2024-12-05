@@ -2,15 +2,11 @@
 
 from __future__ import print_function
 
-import threading
-
-import roslib; #roslib.load_manifest('teleop_twist_keyboard')
 import rospy
-
+import sys
+import threading
 from geometry_msgs.msg import Twist
 from geometry_msgs.msg import TwistStamped
-
-import sys
 from select import select
 
 if sys.platform == 'win32':
@@ -18,7 +14,6 @@ if sys.platform == 'win32':
 else:
     import termios
     import tty
-
 
 TwistMsg = Twist
 
@@ -49,39 +44,40 @@ CTRL-C to quit
 """
 
 moveBindings = {
-        'i':(1,0,0,0),
-        'o':(1,0,0,-1),
-        'j':(0,0,0,1),
-        'l':(0,0,0,-1),
-        'u':(1,0,0,1),
-        ',':(-1,0,0,0),
-        '.':(-1,0,0,1),
-        'm':(-1,0,0,-1),
-        'O':(1,-1,0,0),
-        'I':(1,0,0,0),
-        'J':(0,1,0,0),
-        'L':(0,-1,0,0),
-        'U':(1,1,0,0),
-        '<':(-1,0,0,0),
-        '>':(-1,-1,0,0),
-        'M':(-1,1,0,0),
-        't':(0,0,1,0),
-        'b':(0,0,-1,0),
-    }
+    'i': (1, 0, 0, 0),
+    'o': (1, 0, 0, -1),
+    'j': (0, 0, 0, 1),
+    'l': (0, 0, 0, -1),
+    'u': (1, 0, 0, 1),
+    ',': (-1, 0, 0, 0),
+    '.': (-1, 0, 0, 1),
+    'm': (-1, 0, 0, -1),
+    'O': (1, -1, 0, 0),
+    'I': (1, 0, 0, 0),
+    'J': (0, 1, 0, 0),
+    'L': (0, -1, 0, 0),
+    'U': (1, 1, 0, 0),
+    '<': (-1, 0, 0, 0),
+    '>': (-1, -1, 0, 0),
+    'M': (-1, 1, 0, 0),
+    't': (0, 0, 1, 0),
+    'b': (0, 0, -1, 0),
+}
 
-speedBindings={
-        'q':(1.1,1.1),
-        'z':(.9,.9),
-        'w':(1.1,1),
-        'x':(.9,1),
-        'e':(1,1.1),
-        'c':(1,.9),
-    }
+speedBindings = {
+    'q': (1.1, 1.1),
+    'z': (.9, .9),
+    'w': (1.1, 1),
+    'x': (.9, 1),
+    'e': (1, 1.1),
+    'c': (1, .9),
+}
+
 
 class PublishThread(threading.Thread):
     def __init__(self, rate):
         super(PublishThread, self).__init__()
-        self.publisher = rospy.Publisher('cmd_vel', TwistMsg, queue_size = 1)
+        self.publisher = rospy.Publisher('cmd_vel', TwistMsg, queue_size=1)
         self.x = 0.0
         self.y = 0.0
         self.z = 0.0
@@ -182,26 +178,30 @@ def getKey(settings, timeout):
         termios.tcsetattr(sys.stdin, termios.TCSADRAIN, settings)
     return key
 
+
 def saveTerminalSettings():
     if sys.platform == 'win32':
         return None
     return termios.tcgetattr(sys.stdin)
+
 
 def restoreTerminalSettings(old_settings):
     if sys.platform == 'win32':
         return
     termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
 
-def vels(speed, turn):
-    return "currently:\tspeed %s\tturn %s " % (speed,turn)
 
-if __name__=="__main__":
+def vels(speed, turn):
+    return "currently:\tspeed %s\tturn %s " % (speed, turn)
+
+
+if __name__ == "__main__":
     settings = saveTerminalSettings()
 
     rospy.init_node('teleop_twist_keyboard')
 
-    speed = rospy.get_param("~speed", 0.5)
-    turn = rospy.get_param("~turn", 1.0)
+    speed = rospy.get_param("~speed", 5.0)
+    turn = rospy.get_param("~turn", 3.0)
     speed_limit = rospy.get_param("~speed_limit", 1000)
     turn_limit = rospy.get_param("~turn_limit", 1000)
     repeat = rospy.get_param("~repeat_rate", 0.0)
@@ -224,8 +224,8 @@ if __name__=="__main__":
         pub_thread.update(x, y, z, th, speed, turn)
 
         print(msg)
-        print(vels(speed,turn))
-        while(1):
+        print(vels(speed, turn))
+        while (1):
             key = getKey(settings, key_timeout)
             if key in moveBindings.keys():
                 x = moveBindings[key][0]
@@ -239,7 +239,7 @@ if __name__=="__main__":
                     print("Linear speed limit reached!")
                 if turn == turn_limit:
                     print("Angular speed limit reached!")
-                print(vels(speed,turn))
+                print(vels(speed, turn))
                 if (status == 14):
                     print(msg)
                 status = (status + 1) % 15
