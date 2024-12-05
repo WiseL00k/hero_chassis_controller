@@ -13,6 +13,7 @@ add_definitions(-Wall -Werror)
 find_package(catkin REQUIRED
         COMPONENTS
         roscpp
+        rospy
         std_msgs
         pluginlib
         control_toolbox
@@ -41,6 +42,7 @@ catkin_package(
         LIBRARIES
         CATKIN_DEPENDS
         roscpp
+        rospy
         controller_interface
         hardware_interface
         forward_command_controller
@@ -76,6 +78,12 @@ add_dependencies(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
         ${catkin_LIBRARIES}
 )
+
+catkin_install_python(PROGRAMS
+        scripts/teleop_twist_keyboard.py
+        DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
 ## Declare cpp executables
 #add_executable(${PROJECT_NAME}
 #    src/${PROJECT_NAME}_node.cpp
