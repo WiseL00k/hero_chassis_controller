@@ -14,6 +14,7 @@
   <!-- depend: build, export, and execution dependency -->
   <depend>eigen</depend>
   <depend>roscpp</depend>
+  <depend>rospy</depend>
   <depend>std_msgs</depend>
   <depend>controller_interface</depend>
   <depend>hardware_interface</depend>

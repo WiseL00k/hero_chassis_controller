@@ -10,7 +10,6 @@ controller:
     wheel_base: 0.4
     use_global_vel: false
     acceleration_: 60.0
-
   joint_state_controller:
     type: joint_state_controller/JointStateController
     publish_rate: 50

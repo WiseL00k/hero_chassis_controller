@@ -32,41 +32,6 @@ public:
 
   hardware_interface::JointHandle front_left_joint_, front_right_joint_, back_left_joint_, back_right_joint_;
 
-  /*!
-   * \brief Give set velocity of the joint for next update: revolute (angle) and prismatic (velocity)
-   *
-   * \param double pos Velocity command to issue
-   */
-  // void setCommand(double cmd);
-
-  /*!
-   * \brief Get latest velocity command to the joint: revolute (angle) and prismatic (velocity).
-   */
-  // void getCommand(double & cmd);
-
-  /** \brief This is called from within the realtime thread just before the
-   * first call to \ref update
-   *
-   * \param time The current time
-   */
-  // void starting(const ros::Time& time) override;
-
-  /**
-   * \brief Get the PID parameters
-   */
-  // void getGains(double &p, double &i, double &d, double &i_max, double &i_min);
-
-  /**
-   * \brief Set the PID parameters
-   */
-  // void setGains(const double &p, const double &i, const double &d, const double &i_max, const double &i_min, const
-  // bool &antiwindup = false);
-
-  /**
-   * \brief Get the name of the joint this controller uses
-   */
-  // std::string getJointName();
-
   double command{}; /**< Last commanded velocity. */
 
 private:
@@ -102,6 +67,7 @@ private:
   ros::Subscriber sub_command;
   ros::Publisher odom_pub;
   tf::TransformBroadcaster odom_broadcaster;
+  tf::StampedTransform transform;
   /**< Internal PID controller. */
   control_toolbox::Pid front_left_joint_pid_controller_, front_right_joint_pid_controller_,
       back_left_joint_pid_controller_, back_right_joint_pid_controller_;
