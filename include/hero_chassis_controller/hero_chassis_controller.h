@@ -38,10 +38,13 @@ private:
   int state_{};
   ros::Time current_time, last_time;
   ros::Duration period_;
+  double dt{};
   double current_vel[5]{};
   double target_vel[5]{};
+  double ref_vel[5]{};
   double error[5]{};
   double commanded_effort[5]{};
+  double acceleration_{};
 
   double Vx_target{};
   double Vy_target{};
@@ -56,6 +59,9 @@ private:
   double Vx_current{};
   double Vy_current{};
   double W_current{};
+  double Vx_last{};
+  double Vy_last{};
+  double W_last{};
 
   int loop_count_{};
   ros::Subscriber sub_command;
@@ -85,6 +91,8 @@ private:
   void compute_odometry();
 
   void updateOdometry();
+
+  void simple_acceleration_planner();
 }; /* hero_chassis_controller */
 
 }  // namespace hero_chassis_controller

@@ -11,7 +11,7 @@ bool HeroChassisController::init(hardware_interface::EffortJointInterface* effor
   controller_nh.getParam("wheel_track", wheelTrack);
   controller_nh.getParam("wheel_base", wheelBase);
   controller_nh.param("use_global_vel", use_global_velocity_, false);
-
+  controller_nh.param("acceleration", acceleration_, 25.0);
   // effort_joint init
   front_left_joint_ = effort_joint_interface->getHandle("left_front_wheel_joint");
   front_right_joint_ = effort_joint_interface->getHandle("right_front_wheel_joint");
@@ -112,20 +112,48 @@ void HeroChassisController::calc_wheel_vel()
 
 void HeroChassisController::calc_chassis_vel()
 {
+  Vx_last = Vx_current;
+  Vy_last = Vy_current;
+  W_last = W_target;
+
   Vx_current = (current_vel[1] + current_vel[2] + current_vel[3] + current_vel[4]) * wheelRadius / 4;
   Vy_current = (-current_vel[1] + current_vel[2] + current_vel[3] - current_vel[4]) * wheelRadius / 4;
   W_current = (-current_vel[1] + current_vel[2] - current_vel[3] + current_vel[4]) *
               (wheelRadius / (4 * ((wheelTrack + wheelBase) / 2)));
 }
 
+void HeroChassisController::simple_acceleration_planner()
+{
+  for (int i = 1; i <= 4; ++i)
+  {
+    if (target_vel[i] > current_vel[i])
+    {
+      ref_vel[i] += acceleration_ * dt;
+      if (ref_vel[i] >= target_vel[i])
+      {
+        ref_vel[i] = target_vel[i];
+      }
+    }
+    if (target_vel[i] < current_vel[i])
+    {
+      ref_vel[i] -= acceleration_ * dt;
+      if (ref_vel[i] <= target_vel[i])
+      {
+        ref_vel[i] = target_vel[i];
+      }
+    }
+  }
+}
+
 void HeroChassisController::chassis_control()
 {
   // Inverse Kinematics and PID control
   calc_wheel_vel();
+  simple_acceleration_planner();
 
   for (int i = 1; i <= 4; ++i)
   {
-    error[i] = target_vel[i] - current_vel[i];
+    error[i] = ref_vel[i] - current_vel[i];
 
     // Set the PID error and compute the PID command with nonuniform time
     // step size. The derivative error is computed from the change in the error
@@ -141,7 +169,7 @@ void HeroChassisController::chassis_control()
 
 void HeroChassisController::compute_odometry()
 {
-  double dt = period_.toSec();
+  dt = period_.toSec();
   double delta_x = (Vx_current * cos(th) - Vy_current * sin(th)) * dt;
   double delta_y = (Vx_current * sin(th) + Vy_current * cos(th)) * dt;
   double delta_th = W_current * dt;
