@@ -8,7 +8,7 @@ controller:
     wheel_radius: 0.07625
     wheel_track: 0.4
     wheel_base: 0.4
-    use_global_vel: false
+    use_global_vel: true
     chassis_acceleration: 5.0
 
   joint_state_controller:

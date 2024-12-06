@@ -61,6 +61,7 @@ private:
   ros::Subscriber sub_command;
   ros::Publisher odom_pub;
   tf::TransformBroadcaster odom_broadcaster;
+  tf::StampedTransform transform;
   /**< Internal PID controller. */
   control_toolbox::Pid front_left_joint_pid_controller_, front_right_joint_pid_controller_,
       back_left_joint_pid_controller_, back_right_joint_pid_controller_;

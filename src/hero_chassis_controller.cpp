@@ -54,14 +54,14 @@ void HeroChassisController::update(const ros::Time& time, const ros::Duration& p
   if (use_global_velocity_)
   {
     global_vel.header.frame_id = "odom";
-    //    global_vel.header.stamp = current_time - ros::Duration(0.004);
+    //    global_vel.header.stamp = current_time;
     global_vel.header.stamp = ros::Time(0);
     global_vel.vector.x = Vx_target;
     global_vel.vector.y = Vy_target;
     global_vel.vector.z = 0.0;
 
     tf_listener_.waitForTransform("base_link", "odom", ros::Time(0), ros::Duration(3.0));
-    //        tf_listener_.lookupTransform("base_link", "odom", ros::Time(0), transform);
+    tf_listener_.lookupTransform("base_link", "odom", ros::Time(0), transform);
     tf_listener_.transformVector("base_link", global_vel, base_vel);
 
     Vx_target = base_vel.vector.x;
