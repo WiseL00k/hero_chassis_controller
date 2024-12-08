@@ -4,7 +4,7 @@
 
 This is a hero_chassis_controller to control a virtual hero_robot_chassis in gazebo.
 
-**Keywords:** ROS,ros_control,PID
+**Keywords:** ROS,ros_control,PID,Mecanum wheel
 
 ### License
 
@@ -68,43 +68,27 @@ mon launch hero_chassis_controller run_simulation_and_controller.launch
 
 ## Nodes
 
-### ros_package_template
+### hero_chassis_controller
 
-Reads temperature measurements and computed the average.
+Control hero robot chassis motion.
 
 #### Subscribed Topics
 
-* **`/temperature`** ([sensor_msgs/Temperature])
+* **`/cmd_vel`** ([geometry_msgs/Twist])
 
-  The temperature measurements from which the average is computed.
+  Expected chassis speed.
 
 #### Published Topics
 
-...
+- **`/odom`** ([nav_msgs/Odometry])
 
-#### Services
-
-* **`get_average`** ([std_srvs/Trigger])
-
-  Returns information about the current average. For example, you can trigger the computation from the console with
-
-  	rosservice call /ros_package_template/get_average
-
-#### Parameters
-
-* **`subscriber_topic`** (string, default: "/temperature")
-
-  The name of the input topic.
-
-* **`cache_size`** (int, default: 200, min: 0, max: 1000)
-
-  The size of the cache.
+	Odometer information.
 
 ### teleop_twist_keyboard
 
 Generic Keyboard Teleop for ROS
 
-#### Subscribed Topics
+#### Published Topics
 
 - **`/cmd_vel`** ([geometry_msgs/Twist])
 
