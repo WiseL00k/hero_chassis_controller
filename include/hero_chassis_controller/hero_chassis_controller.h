@@ -30,6 +30,7 @@ public:
 
   void update(const ros::Time& time, const ros::Duration& period) override;
 
+  std::vector<hardware_interface::JointHandle> joint_handles_{};
   hardware_interface::JointHandle front_left_joint_, front_right_joint_, back_left_joint_, back_right_joint_;
 
 private:
@@ -63,12 +64,17 @@ private:
   double Vy_last{};
   double W_last{};
 
+  double power_limit{};
+  double effort_coeff_{};
+  double velocity_coeff_{};
+  double power_offset_{};
   int loop_count_{};
   ros::Subscriber sub_command;
   ros::Publisher odom_pub;
   tf::TransformBroadcaster odom_broadcaster;
   tf::StampedTransform transform;
   /**< Internal PID controller. */
+  std::vector<control_toolbox::Pid> joint_pid_controller_{};
   control_toolbox::Pid front_left_joint_pid_controller_, front_right_joint_pid_controller_,
       back_left_joint_pid_controller_, back_right_joint_pid_controller_;
 
@@ -97,6 +103,8 @@ private:
   void simple_acceleration_planner();
 
   void controller_state_publish();
+
+  void powerLimit();
 }; /* hero_chassis_controller */
 
 }  // namespace hero_chassis_controller

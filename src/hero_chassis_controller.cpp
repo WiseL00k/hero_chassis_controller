@@ -10,20 +10,33 @@ bool HeroChassisController::init(hardware_interface::EffortJointInterface* effor
   controller_nh.getParam("wheel_radius", wheelRadius);
   controller_nh.getParam("wheel_track", wheelTrack);
   controller_nh.getParam("wheel_base", wheelBase);
+  controller_nh.getParam("power/effort_coeff", effort_coeff_);
+  controller_nh.getParam("power/vel_coeff", velocity_coeff_);
+  controller_nh.getParam("power/power_offset", power_offset_);
   controller_nh.param("timeout", timeout_, 0.1);
   controller_nh.param("use_global_vel", use_global_velocity_, false);
   controller_nh.param("acceleration", acceleration_, 65.0);
+  controller_nh.param("power_limit", power_limit, 450.0);
+
   // effort_joint init
   front_left_joint_ = effort_joint_interface->getHandle("left_front_wheel_joint");
   front_right_joint_ = effort_joint_interface->getHandle("right_front_wheel_joint");
   back_left_joint_ = effort_joint_interface->getHandle("left_back_wheel_joint");
   back_right_joint_ = effort_joint_interface->getHandle("right_back_wheel_joint");
+  joint_handles_.push_back(front_left_joint_);
+  joint_handles_.push_back(front_right_joint_);
+  joint_handles_.push_back(back_left_joint_);
+  joint_handles_.push_back(back_right_joint_);
 
   // load PID Controller using gains set on parameter server
   front_left_joint_pid_controller_.init(ros::NodeHandle(controller_nh, "front_left_joint_pid"));
   front_right_joint_pid_controller_.init(ros::NodeHandle(controller_nh, "front_right_joint_pid"));
   back_left_joint_pid_controller_.init(ros::NodeHandle(controller_nh, "back_left_joint_pid"));
   back_right_joint_pid_controller_.init(ros::NodeHandle(controller_nh, "back_right_joint_pid"));
+  joint_pid_controller_.push_back(front_left_joint_pid_controller_);
+  joint_pid_controller_.push_back(front_right_joint_pid_controller_);
+  joint_pid_controller_.push_back(back_left_joint_pid_controller_);
+  joint_pid_controller_.push_back(back_right_joint_pid_controller_);
 
   // Start realtime state publisher
   controller_state_publisher_.reset(
@@ -152,8 +165,10 @@ void HeroChassisController::chassis_control()
     // Set the PID error and compute the PID command with nonuniform time
     // step size. The derivative error is computed from the change in the error
     // and the timestep dt.
-    commanded_effort[i] = front_left_joint_pid_controller_.computeCommand(error[i], period_);
+    commanded_effort[i] = joint_pid_controller_[i - 1].computeCommand(error[i], period_);
   }
+
+  powerLimit();
 
   front_left_joint_.setCommand(commanded_effort[1]);
   front_right_joint_.setCommand(commanded_effort[2]);
@@ -232,6 +247,26 @@ void HeroChassisController::controller_state_publish()
     loop_count_ = 0;
   }
   loop_count_++;
+}
+
+void HeroChassisController::powerLimit()
+{
+  // Three coefficients of a quadratic equation in one variable
+  double a = 0., b = 0., c = 0.;
+  for (const auto& joint : joint_handles_)
+  {
+    double cmd_effort = joint.getCommand();
+    double real_vel = joint.getVelocity();
+    a += cmd_effort * cmd_effort;
+    b += std::abs(cmd_effort * real_vel);
+    c += real_vel * real_vel;
+  }
+  a *= effort_coeff_;
+  c = c * velocity_coeff_ - power_offset_ - power_limit;
+  // Root formula for quadratic equation in one variable
+  double zoom_coeff = ((b * b) - 4 * a * c) > 0 ? ((-b + sqrt((b * b) - 4 * a * c)) / (2 * a)) : 0.;
+  for (auto joint : joint_handles_)
+    joint.setCommand(zoom_coeff > 1 ? joint.getCommand() : joint.getCommand() * zoom_coeff);
 }
 
 PLUGINLIB_EXPORT_CLASS(hero_chassis_controller::HeroChassisController, controller_interface::ControllerBase)

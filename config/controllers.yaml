@@ -11,6 +11,11 @@ controller:
     use_global_vel: false
     acceleration: 65.0
     timeout: 0.1
+    power_limit: 450.0
+    power:
+      effort_coeff: 3.9
+      vel_coeff: 0.00855
+      power_offset: -9.8
   joint_state_controller:
     type: joint_state_controller/JointStateController
     publish_rate: 50
