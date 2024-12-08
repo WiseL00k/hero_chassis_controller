@@ -10,8 +10,9 @@ bool HeroChassisController::init(hardware_interface::EffortJointInterface* effor
   controller_nh.getParam("wheel_radius", wheelRadius);
   controller_nh.getParam("wheel_track", wheelTrack);
   controller_nh.getParam("wheel_base", wheelBase);
+  controller_nh.param("timeout", timeout_, 0.1);
   controller_nh.param("use_global_vel", use_global_velocity_, false);
-  controller_nh.param("acceleration", acceleration_, 25.0);
+  controller_nh.param("acceleration", acceleration_, 65.0);
   // effort_joint init
   front_left_joint_ = effort_joint_interface->getHandle("left_front_wheel_joint");
   front_right_joint_ = effort_joint_interface->getHandle("right_front_wheel_joint");
@@ -40,11 +41,15 @@ void HeroChassisController::update(const ros::Time& time, const ros::Duration& p
   current_time = time;
   period_ = period;
 
+  if ((current_time - last_cmd_vel_stamp_).toSec() > timeout_)
+  {
+    Vx_target = 0.;
+    Vy_target = 0.;
+    W_target = 0.;
+  }
+
   // get each current_wheel_vel
-  current_vel[1] = front_left_joint_.getVelocity();
-  current_vel[2] = front_right_joint_.getVelocity();
-  current_vel[3] = back_left_joint_.getVelocity();
-  current_vel[4] = back_right_joint_.getVelocity();
+  get_wheel_vel();
 
   // odometry
   calc_chassis_vel();
@@ -70,36 +75,25 @@ void HeroChassisController::update(const ros::Time& time, const ros::Duration& p
 
   chassis_control();
 
-  if (loop_count_ % 10 == 0)
-  {
-    if (controller_state_publisher_ && controller_state_publisher_->trylock())
-    {
-      controller_state_publisher_->msg_.header.stamp = time;
-      controller_state_publisher_->msg_.set_point = command;
-      controller_state_publisher_->msg_.process_value = current_vel[1];
-      controller_state_publisher_->msg_.error = error[1];
-      controller_state_publisher_->msg_.time_step = period.toSec();
-      controller_state_publisher_->msg_.command = commanded_effort[1];
+  controller_state_publish();
 
-      double dummy;
-      bool antiwindup;
-      front_left_joint_pid_controller_.getGains(controller_state_publisher_->msg_.p,
-                                                controller_state_publisher_->msg_.i,
-                                                controller_state_publisher_->msg_.d,
-                                                controller_state_publisher_->msg_.i_clamp, dummy, antiwindup);
-      controller_state_publisher_->msg_.antiwindup = static_cast<char>(antiwindup);
-      controller_state_publisher_->unlockAndPublish();
-    }
-  }
-  loop_count_++;
   last_time = current_time;
 }
 
 void HeroChassisController::set_chassis_state(const geometry_msgs::Twist::ConstPtr& msg)
 {
+  last_cmd_vel_stamp_ = ros::Time::now();
   Vx_target = msg->linear.x;
   Vy_target = msg->linear.y;
   W_target = msg->angular.z;
+}
+
+void HeroChassisController::get_wheel_vel()
+{
+  current_vel[1] = front_left_joint_.getVelocity();
+  current_vel[2] = front_right_joint_.getVelocity();
+  current_vel[3] = back_left_joint_.getVelocity();
+  current_vel[4] = back_right_joint_.getVelocity();
 }
 
 void HeroChassisController::calc_wheel_vel()
@@ -211,6 +205,33 @@ void HeroChassisController::updateOdometry()
   odom_data.twist.twist.angular.z = W_current;
 
   odom_pub.publish(odom_data);
+}
+
+void HeroChassisController::controller_state_publish()
+{
+  if (loop_count_ % 10 == 0)
+  {
+    if (controller_state_publisher_ && controller_state_publisher_->trylock())
+    {
+      controller_state_publisher_->msg_.header.stamp = current_time;
+      controller_state_publisher_->msg_.set_point = target_vel[1];
+      controller_state_publisher_->msg_.process_value = current_vel[1];
+      controller_state_publisher_->msg_.error = error[1];
+      controller_state_publisher_->msg_.time_step = period_.toSec();
+      controller_state_publisher_->msg_.command = commanded_effort[1];
+
+      double dummy;
+      bool antiwindup;
+      front_left_joint_pid_controller_.getGains(controller_state_publisher_->msg_.p,
+                                                controller_state_publisher_->msg_.i,
+                                                controller_state_publisher_->msg_.d,
+                                                controller_state_publisher_->msg_.i_clamp, dummy, antiwindup);
+      controller_state_publisher_->msg_.antiwindup = static_cast<char>(antiwindup);
+      controller_state_publisher_->unlockAndPublish();
+    }
+    loop_count_ = 0;
+  }
+  loop_count_++;
 }
 
 PLUGINLIB_EXPORT_CLASS(hero_chassis_controller::HeroChassisController, controller_interface::ControllerBase)

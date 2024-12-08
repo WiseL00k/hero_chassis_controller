@@ -32,12 +32,12 @@ public:
 
   hardware_interface::JointHandle front_left_joint_, front_right_joint_, back_left_joint_, back_right_joint_;
 
-  double command{}; /**< Last commanded velocity. */
-
 private:
   int state_{};
   ros::Time current_time, last_time;
+  ros::Time last_cmd_vel_stamp_;
   ros::Duration period_;
+  double timeout_{};
   double dt{};
   double current_vel[5]{};
   double target_vel[5]{};
@@ -82,6 +82,8 @@ private:
    */
   void set_chassis_state(const geometry_msgs::Twist::ConstPtr& msg);
 
+  void get_wheel_vel();
+
   void calc_wheel_vel();
 
   void calc_chassis_vel();
@@ -93,6 +95,8 @@ private:
   void updateOdometry();
 
   void simple_acceleration_planner();
+
+  void controller_state_publish();
 }; /* hero_chassis_controller */
 
 }  // namespace hero_chassis_controller
