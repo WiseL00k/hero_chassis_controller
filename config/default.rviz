@@ -6,6 +6,8 @@ Panels:
       Expanded:
         - /Global Options1
         - /Status1
+        - /TF1/Frames1
+        - /RobotModel1/Status1
       Splitter Ratio: 0.5
     Tree Height: 549
   - Class: rviz/Selection
@@ -57,11 +59,147 @@ Visualization Manager:
       Filter (whitelist): ""
       Frame Timeout: 15
       Frames:
-        All Enabled: true
+        All Enabled: false
         base_link:
           Value: true
+        left_back_roller_0:
+          Value: false
+        left_back_roller_1:
+          Value: false
+        left_back_roller_10:
+          Value: false
+        left_back_roller_11:
+          Value: false
+        left_back_roller_12:
+          Value: false
+        left_back_roller_13:
+          Value: false
+        left_back_roller_14:
+          Value: false
+        left_back_roller_15:
+          Value: false
+        left_back_roller_2:
+          Value: false
+        left_back_roller_3:
+          Value: false
+        left_back_roller_4:
+          Value: false
+        left_back_roller_5:
+          Value: false
+        left_back_roller_6:
+          Value: false
+        left_back_roller_7:
+          Value: false
+        left_back_roller_8:
+          Value: false
+        left_back_roller_9:
+          Value: false
+        left_back_wheel:
+          Value: false
+        left_front_roller_0:
+          Value: false
+        left_front_roller_1:
+          Value: false
+        left_front_roller_10:
+          Value: false
+        left_front_roller_11:
+          Value: false
+        left_front_roller_12:
+          Value: false
+        left_front_roller_13:
+          Value: false
+        left_front_roller_14:
+          Value: false
+        left_front_roller_15:
+          Value: false
+        left_front_roller_2:
+          Value: false
+        left_front_roller_3:
+          Value: false
+        left_front_roller_4:
+          Value: false
+        left_front_roller_5:
+          Value: false
+        left_front_roller_6:
+          Value: false
+        left_front_roller_7:
+          Value: false
+        left_front_roller_8:
+          Value: false
+        left_front_roller_9:
+          Value: false
+        left_front_wheel:
+          Value: false
         odom:
           Value: true
+        right_back_roller_0:
+          Value: false
+        right_back_roller_1:
+          Value: false
+        right_back_roller_10:
+          Value: false
+        right_back_roller_11:
+          Value: false
+        right_back_roller_12:
+          Value: false
+        right_back_roller_13:
+          Value: false
+        right_back_roller_14:
+          Value: false
+        right_back_roller_15:
+          Value: false
+        right_back_roller_2:
+          Value: false
+        right_back_roller_3:
+          Value: false
+        right_back_roller_4:
+          Value: false
+        right_back_roller_5:
+          Value: false
+        right_back_roller_6:
+          Value: false
+        right_back_roller_7:
+          Value: false
+        right_back_roller_8:
+          Value: false
+        right_back_roller_9:
+          Value: false
+        right_back_wheel:
+          Value: false
+        right_front_roller_0:
+          Value: false
+        right_front_roller_1:
+          Value: false
+        right_front_roller_10:
+          Value: false
+        right_front_roller_11:
+          Value: false
+        right_front_roller_12:
+          Value: false
+        right_front_roller_13:
+          Value: false
+        right_front_roller_14:
+          Value: false
+        right_front_roller_15:
+          Value: false
+        right_front_roller_2:
+          Value: false
+        right_front_roller_3:
+          Value: false
+        right_front_roller_4:
+          Value: false
+        right_front_roller_5:
+          Value: false
+        right_front_roller_6:
+          Value: false
+        right_front_roller_7:
+          Value: false
+        right_front_roller_8:
+          Value: false
+        right_front_roller_9:
+          Value: false
+        right_front_wheel:
+          Value: false
       Marker Alpha: 1
       Marker Scale: 1
       Name: TF
@@ -71,7 +209,138 @@ Visualization Manager:
       Tree:
         odom:
           base_link:
-            {}
+            left_back_wheel:
+              left_back_roller_0:
+                {}
+              left_back_roller_1:
+                {}
+              left_back_roller_10:
+                {}
+              left_back_roller_11:
+                {}
+              left_back_roller_12:
+                {}
+              left_back_roller_13:
+                {}
+              left_back_roller_14:
+                {}
+              left_back_roller_15:
+                {}
+              left_back_roller_2:
+                {}
+              left_back_roller_3:
+                {}
+              left_back_roller_4:
+                {}
+              left_back_roller_5:
+                {}
+              left_back_roller_6:
+                {}
+              left_back_roller_7:
+                {}
+              left_back_roller_8:
+                {}
+              left_back_roller_9:
+                {}
+            left_front_wheel:
+              left_front_roller_0:
+                {}
+              left_front_roller_1:
+                {}
+              left_front_roller_10:
+                {}
+              left_front_roller_11:
+                {}
+              left_front_roller_12:
+                {}
+              left_front_roller_13:
+                {}
+              left_front_roller_14:
+                {}
+              left_front_roller_15:
+                {}
+              left_front_roller_2:
+                {}
+              left_front_roller_3:
+                {}
+              left_front_roller_4:
+                {}
+              left_front_roller_5:
+                {}
+              left_front_roller_6:
+                {}
+              left_front_roller_7:
+                {}
+              left_front_roller_8:
+                {}
+              left_front_roller_9:
+                {}
+            right_back_wheel:
+              right_back_roller_0:
+                {}
+              right_back_roller_1:
+                {}
+              right_back_roller_10:
+                {}
+              right_back_roller_11:
+                {}
+              right_back_roller_12:
+                {}
+              right_back_roller_13:
+                {}
+              right_back_roller_14:
+                {}
+              right_back_roller_15:
+                {}
+              right_back_roller_2:
+                {}
+              right_back_roller_3:
+                {}
+              right_back_roller_4:
+                {}
+              right_back_roller_5:
+                {}
+              right_back_roller_6:
+                {}
+              right_back_roller_7:
+                {}
+              right_back_roller_8:
+                {}
+              right_back_roller_9:
+                {}
+            right_front_wheel:
+              right_front_roller_0:
+                {}
+              right_front_roller_1:
+                {}
+              right_front_roller_10:
+                {}
+              right_front_roller_11:
+                {}
+              right_front_roller_12:
+                {}
+              right_front_roller_13:
+                {}
+              right_front_roller_14:
+                {}
+              right_front_roller_15:
+                {}
+              right_front_roller_2:
+                {}
+              right_front_roller_3:
+                {}
+              right_front_roller_4:
+                {}
+              right_front_roller_5:
+                {}
+              right_front_roller_6:
+                {}
+              right_front_roller_7:
+                {}
+              right_front_roller_8:
+                {}
+              right_front_roller_9:
+                {}
       Update Interval: 0
       Value: true
     - Angle Tolerance: 0.10000000149011612
@@ -109,6 +378,367 @@ Visualization Manager:
       Topic: ""
       Unreliable: false
       Value: true
+    - Alpha: 1
+      Class: rviz/RobotModel
+      Collision Enabled: false
+      Enabled: true
+      Links:
+        All Links Enabled: true
+        Expand Joint Details: false
+        Expand Link Details: false
+        Expand Tree: false
+        Link Tree Style: Links in Alphabetic Order
+        base_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_back_roller_0:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_back_roller_1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_back_roller_10:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_back_roller_11:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_back_roller_12:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_back_roller_13:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_back_roller_14:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_back_roller_15:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_back_roller_2:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_back_roller_3:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_back_roller_4:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_back_roller_5:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_back_roller_6:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_back_roller_7:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_back_roller_8:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_back_roller_9:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_back_wheel:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_front_roller_0:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_front_roller_1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_front_roller_10:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_front_roller_11:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_front_roller_12:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_front_roller_13:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_front_roller_14:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_front_roller_15:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_front_roller_2:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_front_roller_3:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_front_roller_4:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_front_roller_5:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_front_roller_6:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_front_roller_7:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_front_roller_8:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_front_roller_9:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_front_wheel:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_back_roller_0:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_back_roller_1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_back_roller_10:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_back_roller_11:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_back_roller_12:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_back_roller_13:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_back_roller_14:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_back_roller_15:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_back_roller_2:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_back_roller_3:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_back_roller_4:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_back_roller_5:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_back_roller_6:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_back_roller_7:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_back_roller_8:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_back_roller_9:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_back_wheel:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_front_roller_0:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_front_roller_1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_front_roller_10:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_front_roller_11:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_front_roller_12:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_front_roller_13:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_front_roller_14:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_front_roller_15:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_front_roller_2:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_front_roller_3:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_front_roller_4:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_front_roller_5:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_front_roller_6:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_front_roller_7:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_front_roller_8:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_front_roller_9:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_front_wheel:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+      Name: RobotModel
+      Robot Description: robot_description
+      TF Prefix: ""
+      Update Interval: 0
+      Value: true
+      Visual Enabled: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -137,7 +767,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 8.001245498657227
+      Distance: 3.9969980716705322
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -145,17 +775,17 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: 1.1359974145889282
-        Y: 0.16990283131599426
-        Z: 0.07266772538423538
+        X: -0.11202756315469742
+        Y: 0.2525930106639862
+        Z: 0.02599300816655159
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 1.2603975534439087
+      Pitch: 0.5103980898857117
       Target Frame: <Fixed Frame>
-      Yaw: 3.388559341430664
+      Yaw: 3.983574628829956
     Saved: ~
 Window Geometry:
   Displays:
@@ -173,5 +803,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1200
-  X: 60
-  Y: 27
+  X: 1244
+  Y: 222

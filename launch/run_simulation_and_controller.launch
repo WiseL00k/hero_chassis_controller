@@ -1,16 +1,25 @@
 <launch>
-  <include file="$(find rm_description)/launch/hero.launch">
-    <arg name="load_chassis" value="true"/>
-    <arg name="roller_type" value="realistic"/>
-    <arg name="paused" value="true"/>
-  </include>
+    <include file="$(find rm_description)/launch/hero.launch">
+        <arg name="load_chassis" value="true"/>
+        <arg name="roller_type" value="realistic"/>
+        <arg name="paused" value="true"/>
+    </include>
 
-  <rosparam file="$(find hero_chassis_controller)/config/controllers.yaml" command="load"/>
-  <!-- load the controllers -->
-  <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
-        output="screen" args="
+    <arg name="use_rviz" default="false"/>
+
+    <rosparam file="$(find hero_chassis_controller)/config/controllers.yaml" command="load"/>
+    <!-- load the controllers -->
+    <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+          output="screen" args="
         controller/hero_chassis_controller
         controller/joint_state_controller
   "/>
+
+    <group if="$(arg use_rviz)">
+        <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" output="screen"/>
+        <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" output="screen"/>
+        <node name="rviz" pkg="rviz" type="rviz" args="-d $(find hero_chassis_controller)/config/default.rviz"
+              output="screen"/>
+    </group>
 
 </launch>
