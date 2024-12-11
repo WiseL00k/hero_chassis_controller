@@ -7,12 +7,16 @@ bool HeroChassisController::init(hardware_interface::EffortJointInterface* effor
                                  ros::NodeHandle& root_nh, ros::NodeHandle& controller_nh)
 {
   // get params
+  if (!controller_nh.getParam("power/effort_coeff", effort_coeff_) ||
+      !controller_nh.getParam("power/vel_coeff", velocity_coeff_) ||
+      !controller_nh.getParam("power/power_offset", power_offset_))
+  {
+    ROS_ERROR("Some chassis params doesn't given (namespace: %s)", controller_nh.getNamespace().c_str());
+    return false;
+  }
   controller_nh.getParam("wheel_radius", wheelRadius);
   controller_nh.getParam("wheel_track", wheelTrack);
   controller_nh.getParam("wheel_base", wheelBase);
-  controller_nh.getParam("power/effort_coeff", effort_coeff_);
-  controller_nh.getParam("power/vel_coeff", velocity_coeff_);
-  controller_nh.getParam("power/power_offset", power_offset_);
   controller_nh.param("timeout", timeout_, 0.1);
   controller_nh.param("use_global_vel", use_global_velocity_, false);
   controller_nh.param("acceleration", acceleration_, 65.0);
