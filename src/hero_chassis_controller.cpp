@@ -71,19 +71,26 @@ void HeroChassisController::update(const ros::Time& time, const ros::Duration& p
 
   if (use_global_velocity_)
   {
-    global_vel.header.frame_id = "odom";
-    //    global_vel.header.stamp = current_time;
-    global_vel.header.stamp = ros::Time(0);
-    global_vel.vector.x = Vx_target;
-    global_vel.vector.y = Vy_target;
-    global_vel.vector.z = 0.0;
+    try
+    {
+      global_vel.header.frame_id = "odom";
+      //    global_vel.header.stamp = current_time;
+      global_vel.header.stamp = ros::Time(0);
+      global_vel.vector.x = Vx_target;
+      global_vel.vector.y = Vy_target;
+      global_vel.vector.z = 0.0;
 
-    tf_listener_.waitForTransform("base_link", "odom", ros::Time(0), ros::Duration(3.0));
-    tf_listener_.lookupTransform("base_link", "odom", ros::Time(0), transform);
-    tf_listener_.transformVector("base_link", global_vel, base_vel);
+      tf_listener_.waitForTransform("base_link", "odom", ros::Time(0), ros::Duration(3.0));
+      tf_listener_.lookupTransform("base_link", "odom", ros::Time(0), transform);
+      tf_listener_.transformVector("base_link", global_vel, base_vel);
 
-    Vx_target = base_vel.vector.x;
-    Vy_target = base_vel.vector.y;
+      Vx_target = base_vel.vector.x;
+      Vy_target = base_vel.vector.y;
+    }
+    catch (tf::TransformException& ex)
+    {
+      ROS_WARN("global_vel->base_vel error: %s", ex.what());
+    }
   }
 
   chassis_control();
@@ -190,36 +197,43 @@ void HeroChassisController::compute_odometry()
 
 void HeroChassisController::updateOdometry()
 {
-  geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(th);
-  geometry_msgs::TransformStamped odom_trans;
+  try
+  {
+    geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(th);
+    geometry_msgs::TransformStamped odom_trans;
 
-  odom_trans.header.stamp = current_time;
-  odom_trans.header.frame_id = "odom";
-  odom_trans.child_frame_id = "base_link";
+    odom_trans.header.stamp = current_time;
+    odom_trans.header.frame_id = "odom";
+    odom_trans.child_frame_id = "base_link";
 
-  odom_trans.transform.translation.x = x;
-  odom_trans.transform.translation.y = y;
-  odom_trans.transform.translation.z = 0.0;
-  odom_trans.transform.rotation = odom_quat;
+    odom_trans.transform.translation.x = x;
+    odom_trans.transform.translation.y = y;
+    odom_trans.transform.translation.z = 0.0;
+    odom_trans.transform.rotation = odom_quat;
 
-  // send the transform
-  odom_broadcaster.sendTransform(odom_trans);
+    // send the transform
+    odom_broadcaster.sendTransform(odom_trans);
 
-  nav_msgs::Odometry odom_data{};
-  odom_data.header.stamp = current_time;
-  odom_data.header.frame_id = "odom";
-  odom_data.child_frame_id = "base_link";
+    nav_msgs::Odometry odom_data{};
+    odom_data.header.stamp = current_time;
+    odom_data.header.frame_id = "odom";
+    odom_data.child_frame_id = "base_link";
 
-  odom_data.pose.pose.position.x = x;
-  odom_data.pose.pose.position.y = y;
-  odom_data.pose.pose.position.z = 0.0;
-  odom_data.pose.pose.orientation = odom_quat;
+    odom_data.pose.pose.position.x = x;
+    odom_data.pose.pose.position.y = y;
+    odom_data.pose.pose.position.z = 0.0;
+    odom_data.pose.pose.orientation = odom_quat;
 
-  odom_data.twist.twist.linear.x = Vx_current;
-  odom_data.twist.twist.linear.y = Vy_current;
-  odom_data.twist.twist.angular.z = W_current;
+    odom_data.twist.twist.linear.x = Vx_current;
+    odom_data.twist.twist.linear.y = Vy_current;
+    odom_data.twist.twist.angular.z = W_current;
 
-  odom_pub.publish(odom_data);
+    odom_pub.publish(odom_data);
+  }
+  catch (tf::TransformException& ex)
+  {
+    ROS_WARN("updateOdometry error: %s", ex.what());
+  }
 }
 
 void HeroChassisController::controller_state_publish()
