@@ -84,6 +84,14 @@ catkin_install_python(PROGRAMS
         DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
+add_executable(teleop_twist_keyboard
+        src/teleop_twist_keyboard.cpp
+)
+
+target_link_libraries(teleop_twist_keyboard
+        ${catkin_LIBRARIES}
+)
+
 ## Declare cpp executables
 #add_executable(${PROJECT_NAME}
 #    src/${PROJECT_NAME}_node.cpp

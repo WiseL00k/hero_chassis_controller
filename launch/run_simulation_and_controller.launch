@@ -5,7 +5,7 @@
         <arg name="paused" value="true"/>
     </include>
 
-    <arg name="use_rviz" default="false"/>
+    <arg name="use_rviz" default="true"/>
 
     <rosparam file="$(find hero_chassis_controller)/config/controllers.yaml" command="load"/>
     <!-- load the controllers -->

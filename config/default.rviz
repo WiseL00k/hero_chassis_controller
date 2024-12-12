@@ -7,7 +7,6 @@ Panels:
         - /Global Options1
         - /Status1
         - /TF1/Frames1
-        - /RobotModel1/Status1
       Splitter Ratio: 0.5
     Tree Height: 549
   - Class: rviz/Selection
@@ -361,7 +360,7 @@ Visualization Manager:
           Value: true
         Value: true
       Enabled: true
-      Keep: 100
+      Keep: 10
       Name: Odometry
       Position Tolerance: 0.10000000149011612
       Queue Size: 10
@@ -370,12 +369,12 @@ Visualization Manager:
         Axes Length: 1
         Axes Radius: 0.10000000149011612
         Color: 255; 25; 0
-        Head Length: 0.30000001192092896
-        Head Radius: 0.10000000149011612
-        Shaft Length: 1
-        Shaft Radius: 0.05000000074505806
+        Head Length: 0.15000000596046448
+        Head Radius: 0.05000000074505806
+        Shaft Length: 0.5
+        Shaft Radius: 0.02500000037252903
         Value: Arrow
-      Topic: ""
+      Topic: /odom
       Unreliable: false
       Value: true
     - Alpha: 1
@@ -767,7 +766,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 3.9969980716705322
+      Distance: 4.695534706115723
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -775,17 +774,17 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: -0.11202756315469742
-        Y: 0.2525930106639862
-        Z: 0.02599300816655159
+        X: -0.2826540470123291
+        Y: 0.5944570302963257
+        Z: 0.2509598731994629
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.5103980898857117
+      Pitch: 0.61039799451828
       Target Frame: <Fixed Frame>
-      Yaw: 3.983574628829956
+      Yaw: 4.018571853637695
     Saved: ~
 Window Geometry:
   Displays:
@@ -803,5 +802,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1200
-  X: 1244
-  Y: 222
+  X: 287
+  Y: 188
