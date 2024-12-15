@@ -84,26 +84,44 @@ private:
   tf::TransformListener tf_listener_;
   geometry_msgs::Vector3Stamped global_vel, base_vel;
   /**
-   * \brief Callback from /cmd_vel subscriber for setpoint
+   * \brief Callback from /cmd_vel subscriber
    */
   void set_chassis_state(const geometry_msgs::Twist::ConstPtr& msg);
-
+  /**
+   * \brief update each wheel velocity for current_vel
+   */
   void get_wheel_vel();
-
+  /**
+   * \brief update each wheel velocity for target_vel
+   */
   void calc_wheel_vel();
-
+  /**
+   * \brief update current_chassis_vel
+   */
   void calc_chassis_vel();
-
+  /**
+   * \brief control chassis
+   */
   void chassis_control();
-
+  /**
+   * \brief update odometry
+   */
   void compute_odometry();
-
+  /**
+   * \brief  odometry publish /odom and update transform
+   */
   void updateOdometry();
-
+  /**
+   * \brief  chassis acceleration control
+   */
   void simple_acceleration_planner();
-
+  /**
+   * \brief  state publish
+   */
   void controller_state_publish();
-
+  /**
+   * \brief  chassis power limit
+   */
   void powerLimit();
 }; /* hero_chassis_controller */
 

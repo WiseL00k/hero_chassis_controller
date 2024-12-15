@@ -58,6 +58,7 @@ void HeroChassisController::update(const ros::Time& time, const ros::Duration& p
   current_time = time;
   period_ = period;
 
+  // avoid loss of control due to lack of command
   if ((current_time - last_cmd_vel_stamp_).toSec() > timeout_)
   {
     Vx_target = 0.;
