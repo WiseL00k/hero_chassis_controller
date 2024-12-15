@@ -83,10 +83,45 @@ Control hero robot chassis motion.
 - **`/odom`** ([nav_msgs/Odometry])
 
 	Odometer information.
+	
+	
 
 ### teleop_twist_keyboard
 
-Generic Keyboard Teleop for ROS
+Generic Keyboard Teleop for ROS --cpp version
+
+#### Published Topics
+
+- **`/cmd_vel`** ([geometry_msgs/Twist])
+
+	Expected chassis speed.
+
+#### Launch
+
+Run.
+
+```
+rosrun hero_chassis_controller teleop_twist_keyboard
+```
+
+#### Usage
+
+```
+Reading from the keyboard  and Publishing to Twist!
+---------------------------
+Moving around:
+q    w    e
+a    s    d
+z    x    c
+
+CTRL-C then press any key to quit
+```
+
+
+
+### teleop_twist_keyboard.py
+
+Generic Keyboard Teleop for ROS --py version
 
 #### Published Topics
 
