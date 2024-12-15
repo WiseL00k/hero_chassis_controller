@@ -271,19 +271,21 @@ void HeroChassisController::controller_state_publish()
 void HeroChassisController::powerLimit()
 {
   // Three coefficients of a quadratic equation in one variable
-  double a = 0., b = 0., c = 0.;
+  double t_2_sum = 0., P_out_sum = 0., w_2_sum = 0.;
   for (const auto& joint : joint_handles_)
   {
     double cmd_effort = joint.getCommand();
     double real_vel = joint.getVelocity();
-    a += cmd_effort * cmd_effort;
-    b += std::abs(cmd_effort * real_vel);
-    c += real_vel * real_vel;
+    t_2_sum += cmd_effort * cmd_effort;
+    P_out_sum += std::abs(cmd_effort * real_vel);
+    w_2_sum += real_vel * real_vel;
   }
-  a *= effort_coeff_;
-  c = c * velocity_coeff_ - power_offset_ - power_limit;
-  // Root formula for quadratic equation in one variable
-  double zoom_coeff = ((b * b) - 4 * a * c) > 0 ? ((-b + sqrt((b * b) - 4 * a * c)) / (2 * a)) : 0.;
+  t_2_sum *= effort_coeff_;
+  w_2_sum = w_2_sum * velocity_coeff_ - power_limit - power_offset_;
+  // Solving zoom_coeff equations
+  double zoom_coeff = ((P_out_sum * P_out_sum) - 4 * t_2_sum * w_2_sum) > 0 ?
+                          ((-P_out_sum + sqrt((P_out_sum * P_out_sum) - 4 * t_2_sum * w_2_sum)) / (2 * t_2_sum)) :
+                          0.;
   for (auto joint : joint_handles_)
     joint.setCommand(zoom_coeff > 1 ? joint.getCommand() : joint.getCommand() * zoom_coeff);
 }
